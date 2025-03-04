@@ -1,9 +1,10 @@
 package com.emos.wx.db.dao;
 
 import com.emos.wx.db.pojo.TbHolidays;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Mapper
 public interface TbHolidaysDao {
     int deleteByPrimaryKey(Integer id);
 

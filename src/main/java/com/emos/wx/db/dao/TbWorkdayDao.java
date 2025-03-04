@@ -1,9 +1,10 @@
 package com.emos.wx.db.dao;
 
 import com.emos.wx.db.pojo.TbWorkday;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Mapper
 public interface TbWorkdayDao {
     int deleteByPrimaryKey(Integer id);
 

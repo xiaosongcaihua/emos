@@ -1,9 +1,10 @@
 package com.emos.wx.db.dao;
 
 import com.emos.wx.db.pojo.TbCheckin;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Mapper
 public interface TbCheckinDao {
     int deleteByPrimaryKey(Integer id);
 
