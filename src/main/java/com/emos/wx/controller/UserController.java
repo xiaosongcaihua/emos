@@ -2,6 +2,7 @@ package com.emos.wx.controller;
 
 import com.emos.wx.common.util.R;
 import com.emos.wx.config.shiro.JwtUtil;
+import com.emos.wx.controller.form.LoginForm;
 import com.emos.wx.controller.form.RegisterForm;
 import com.emos.wx.service.UserService;
 import io.swagger.annotations.Api;
@@ -41,5 +42,14 @@ public class UserController {
     }
     private void saveCacheToken(String token, int userId) {
         redisTemplate.opsForValue().set(token, userId + "", cacheExpire, TimeUnit.DAYS);
+    }
+    @PostMapping("/login")
+    @ApiOperation("登陆系统")
+    public R login(@Valid @RequestBody LoginForm form) {
+        int id = userService.login(form.getCode());
+        String token = jwtUtil.createToken(id);
+        Set<String> permsSet = userService.searchUserPermissions(id);
+        saveCacheToken(token, id);
+        return R.ok("登陆成功").put("token", token).put("permission", permsSet);
     }
 }

@@ -10,7 +10,7 @@ spring:
     database: 0
     host: ${db.host}
     port: 6379
-    password: abc123456
+    password: 1234
     jedis:
       pool:
         max-active: 1000
