@@ -49,4 +49,7 @@
     set `date` = #{date,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="searchTodayIsHolidays" resultType="Integer">
+    SELECT id FROM tb_holidays WHERE date=CURRENT_DATE LIMIT 1;
+  </select>
 </mapper>

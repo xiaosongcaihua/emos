@@ -4,6 +4,8 @@ import com.emos.wx.db.pojo.TbCheckin;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+
 @Mapper
 public interface TbCheckinDao {
     int deleteByPrimaryKey(Integer id);
@@ -17,4 +19,6 @@ public interface TbCheckinDao {
     int updateByPrimaryKeySelective(TbCheckin record);
 
     int updateByPrimaryKey(TbCheckin record);
+
+    Integer haveCheckin(HashMap param);
 }
