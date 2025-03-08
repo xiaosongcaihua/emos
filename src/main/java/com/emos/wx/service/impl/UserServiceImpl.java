@@ -82,6 +82,11 @@ public class UserServiceImpl implements UserService {
         return id;
     }
 
+    @Override
+    public TbUser searchById(int userId) {
+        return userDao.searchById(userId);
+    }
+
 
     @Override
     public Set<String> searchUserPermissions(int userId) {
