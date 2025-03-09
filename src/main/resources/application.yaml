@@ -70,6 +70,7 @@ emos:
     checkinUrl: http://${db.host}:3000/checkin
   email:
     system: 1023369905@qq.com
+  image-folder: D:/emos/image
 wx:
   app-id: wxc75eaab9baa5a676
   app-secret: 3073a9a2df2c07c102d0e653859c2027
