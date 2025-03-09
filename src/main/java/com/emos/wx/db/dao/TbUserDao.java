@@ -27,4 +27,5 @@ public interface TbUserDao {
     Integer searchIdByOpenId(String openId);
     Set<String> searchUserPermissions(int userId);
     TbUser searchById(int userId);
+    HashMap searchNameAndDept(int userId);
 }

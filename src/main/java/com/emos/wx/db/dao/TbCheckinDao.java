@@ -10,7 +10,7 @@ import java.util.HashMap;
 public interface TbCheckinDao {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(TbCheckin record);
+    void insert(TbCheckin entity);
 
     int insertSelective(TbCheckin record);
 

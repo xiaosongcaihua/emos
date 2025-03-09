@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface TbFaceModelDao {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(TbFaceModel record);
 
     int insertSelective(TbFaceModel record);
 
@@ -17,4 +16,7 @@ public interface TbFaceModelDao {
     int updateByPrimaryKeySelective(TbFaceModel record);
 
     int updateByPrimaryKey(TbFaceModel record);
+    public String searchFaceModel(int userId);
+    public void insert(TbFaceModel faceModelEntity);
+    public int deleteFaceModel(int userId);
 }
