@@ -10,7 +10,7 @@ spring:
     default-encoding: UTF-8
     host: smtp.163.com
     username: 13379517860@163.com
-    password: 5830172432468tfJ
+    password: TZYrm36Vh4wd7Pgr
   redis:
     database: 0
     host: ${db.host}
@@ -58,6 +58,7 @@ logging:
     console: "%d{HH:mm:ss} %-5level %msg%n"
 
 emos:
+  code: HelloWorld
   jwt:
     #密钥
     secret: abc123456

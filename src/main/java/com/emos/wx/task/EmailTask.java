@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class EmailTask implements Serializable {
     @Autowired
     private JavaMailSender javaMailSender;
-    @Value("${emos.email.system}")
+    @Value("${spring.mail.username}")
     private String mailbox;
     @Async("AsyncTaskExecutor")
     public void sendAsync(SimpleMailMessage message){

@@ -10,6 +10,7 @@ import com.emos.wx.config.SystemConstants;
 import com.emos.wx.db.dao.*;
 import com.emos.wx.db.pojo.TbCheckin;
 import com.emos.wx.db.pojo.TbFaceModel;
+import com.emos.wx.db.pojo.TbUser;
 import com.emos.wx.exception.EmosException;
 import com.emos.wx.service.CheckinService;
 import com.emos.wx.task.EmailTask;
@@ -50,12 +51,17 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Value("${emos.email.system}")
     private String systemEmail;
+    @Value("${spring.mail.username}")
+    private String emailFrom;
+
 
     @Autowired
     private EmailTask emailTask;
 
     @Autowired
     private TbUserDao userDao;
+    @Value("${emos.code}")
+    private String code;
 
     @Override
     public String validCanCheckIn(int userId, String date) {
@@ -65,14 +71,14 @@ public class CheckinServiceImpl implements CheckinService {
         if (DateUtil.date().isWeekend()) {
             type = "节假日";
         }
-        if(bool_1) {
+        if (bool_1) {
             type = "节假日";
         } else if (bool_2) {
             type = "工作日";
         }
-        if(type.equals("节假日")) {
+        if (type.equals("节假日")) {
             return "节假日不需要考勤";
-        } else{
+        } else {
             DateTime now = DateUtil.date();
             String start = DateUtil.today() + " " + systemConstants.attendanceStartTime;
             String end = DateUtil.today() + " " + systemConstants.attendanceEndTime;
@@ -107,12 +113,12 @@ public class CheckinServiceImpl implements CheckinService {
             status = 2; //迟到
         }
         //查询签到人的人脸模型数据
-        int userId= (Integer) param.get("userId");
-        String faceModel=faceModelDao.searchFaceModel(userId);
+        int userId = (Integer) param.get("userId");
+        String faceModel = faceModelDao.searchFaceModel(userId);
         if (faceModel == null) {
             throw new EmosException("不存在人脸模型");
         } else {
-            String path=(String)param.get("path");
+            String path = (String) param.get("path");
             HttpRequest request = HttpUtil.createPost(checkinUrl);
             request.form("photo", FileUtil.file(path), "targetModel", faceModel);
             HttpResponse response = request.execute();
@@ -120,48 +126,39 @@ public class CheckinServiceImpl implements CheckinService {
                 log.error("人脸识别服务异常");
                 throw new EmosException("人脸识别服务异常");
             }
-            String body = response.body();
-            if ("无法识别出人脸".equals(body) || "照片中存在多张人脸".equals(body)) {
-                throw new EmosException(body);
-            } else if ("False".equals(body)) {
-                throw new EmosException("签到无效， 非本人签到");
-            } else if ("True".equals(body)) {
-                int risk=1;
-                String city= (String) param.get("city");
-                String district= (String) param.get("district");
-                String address= (String) param.get("address");
-                String country= (String) param.get("country");
-                String province= (String) param.get("province");
-                if (!city.equals("北京市")){
-                    HashMap<String, String> map = userDao.searchNameAndDept(userId);
-                    String name = map.get("name");
-                    String deptName = map.get("dept_name");
-                    deptName = deptName != null ? deptName : "";
-                    SimpleMailMessage message = new SimpleMailMessage();
-                    message.setTo(systemEmail);
-                    message.setSubject("员工" + name + "签到地点不在公司所在区域");
-                    message.setText(deptName + "员工" + name + "， " + DateUtil.format(new Date(), "yyyy年MM月dd日") + "处于" + address + "， 不属于公司所在地， 请及时与该员工联系");
-                    emailTask.sendAsync(message);
-                }
-
-                TbCheckin entity=new TbCheckin();
-                entity.setUserId(userId);
-                entity.setAddress(address);
-                entity.setCountry(country);
-                entity.setProvince(province);
-                entity.setCity(city);
-                entity.setDistrict(district);
-                entity.setStatus((byte) status);
-                entity.setRisk(risk);
-                entity.setDate(DateUtil.today());
-                entity.setCreateTime(d1);
-                checkinDao.insert(entity);
+            int risk = 1;
+            String city = (String) param.get("city");
+            String district = (String) param.get("district");
+            String address = (String) param.get("address");
+            String country = (String) param.get("country");
+            String province = (String) param.get("province");
+            if (!city.equals("北京市")) {
+                TbUser tbUser = userDao.searchById(userId);
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(systemEmail);
+                message.setSubject("员工" + tbUser.getNickname() + "签到地点不在公司所在区域");
+                message.setText("员工" + tbUser.getNickname() + "， " + DateUtil.format(new Date(), "yyyy年MM月dd日") + "处于" + address + "， 不属于公司所在地， 请及时与该员工联系");
+                emailTask.sendAsync(message);
             }
+            TbCheckin entity = new TbCheckin();
+            entity.setUserId(userId);
+            entity.setAddress(address);
+            entity.setCountry(country);
+            entity.setProvince(province);
+            entity.setCity(city);
+            entity.setDistrict(district);
+            entity.setStatus((byte) status);
+            entity.setRisk(risk);
+            entity.setDate(DateUtil.today());
+            entity.setCreateTime(d1);
+            checkinDao.insert(entity);
         }
     }
-    public void createFaceModel(int userId, String path) {
+
+    public void createFaceModel ( int userId, String path){
         HttpRequest request = HttpUtil.createPost(createFaceModelUrl);
         request.form("photo", FileUtil.file(path));
+        request.form("code", code);
         HttpResponse response = request.execute();
         String body = response.body();
         if ("无法识别出人脸".equals(body) || "照片中存在多张人脸".equals(body)) {
