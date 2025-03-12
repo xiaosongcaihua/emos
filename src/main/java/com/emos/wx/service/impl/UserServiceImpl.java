@@ -92,4 +92,9 @@ public class UserServiceImpl implements UserService {
     public Set<String> searchUserPermissions(int userId) {
         return userDao.searchUserPermissions(userId);
     }
+    @Override
+    public String searchUserHiredate(int userId) {
+        String hiredate = userDao.searchUserHiredate(userId);
+        return hiredate;
+    }
 }

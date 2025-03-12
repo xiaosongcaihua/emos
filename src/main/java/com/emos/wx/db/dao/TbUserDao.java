@@ -28,4 +28,5 @@ public interface TbUserDao {
     Set<String> searchUserPermissions(int userId);
     TbUser searchById(int userId);
     HashMap searchNameAndDept(int userId);
+    public String searchUserHiredate(int userId);
 }

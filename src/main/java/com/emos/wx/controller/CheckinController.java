@@ -1,12 +1,15 @@
 package com.emos.wx.controller;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.emos.wx.common.util.R;
+import com.emos.wx.config.SystemConstants;
 import com.emos.wx.config.shiro.JwtUtil;
 import com.emos.wx.controller.form.CheckinForm;
 import com.emos.wx.exception.EmosException;
 import com.emos.wx.service.CheckinService;
+import com.emos.wx.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RequestMapping("/checkin")
@@ -34,6 +38,11 @@ public class CheckinController {
 
     @Value("${emos.image-folder}")
     private String imageFolder;
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SystemConstants systemConstants;
 
     @GetMapping("/validCanCheckIn")
     @ApiOperation("查看用户今天是否可以签到")
@@ -100,5 +109,34 @@ public class CheckinController {
             }
 
         }
+    }
+    @GetMapping("/searchTodayCheckin")
+    @ApiOperation("查询用户当日签到数据")
+    /**
+     *  1、关联用户表、部门表、当日签到表查询当前用户当前签到信息
+     *  2、查询当前用户所有的历史签到天数
+     *  3、查询这个周的起始时间和结束时间，如果入职时间小于当前这个周的起始时间，将起始时间更新为入职时间
+     *  4、查询这个月的签到情况封装为一个list
+     */
+    public R searchTodayCheckin(@RequestHeader("token") String token) {
+        int userId = jwtUtil.getUserId(token);
+        HashMap map = checkinService.searchTodayCheckin(userId);
+        map.put("attendanceTime", systemConstants.attendanceTime);
+        map.put("closingTime", systemConstants.closingTime);
+        long days = checkinService.searchCheckinDays(userId);
+        map.put("checkinDays", days);
+        DateTime hiredate = DateUtil.parse(userService.searchUserHiredate(userId));
+        DateTime startDate = DateUtil.beginOfWeek(DateUtil.date());
+        if (startDate.isBefore(hiredate)) {
+            startDate = hiredate;
+        }
+        DateTime endDate = DateUtil.endOfWeek(DateUtil.date());
+        HashMap param = new HashMap();
+        param.put("startDate", startDate.toString());
+        param.put("endDate", endDate.toString());
+        param.put("userId", userId);
+        ArrayList<HashMap> list = checkinService.searchWeekCheckin(param);
+        map.put("weekCheckin", list);
+        return R.ok().put("result", map);
     }
 }
