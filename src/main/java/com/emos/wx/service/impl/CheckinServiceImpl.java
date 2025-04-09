@@ -65,6 +65,10 @@ public class CheckinServiceImpl implements CheckinService {
     private TbUserDao userDao;
     @Value("${emos.code}")
     private String code;
+    @Override
+    public ArrayList<HashMap> searchMonthCheckin(HashMap param) {
+        return this.searchWeekCheckin(param);
+    }
 
     @Override
     public String validCanCheckIn(int userId, String date) {
