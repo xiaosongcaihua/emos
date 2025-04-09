@@ -125,14 +125,14 @@ public class CheckinServiceImpl implements CheckinService {
         if (faceModel == null) {
             throw new EmosException("不存在人脸模型");
         } else {
-            String path = (String) param.get("path");
-            HttpRequest request = HttpUtil.createPost(checkinUrl);
-            request.form("photo", FileUtil.file(path), "targetModel", faceModel);
-            HttpResponse response = request.execute();
-            if (response.getStatus() != 200) {
-                log.error("人脸识别服务异常");
-                throw new EmosException("人脸识别服务异常");
-            }
+//            String path = (String) param.get("path");
+//            HttpRequest request = HttpUtil.createPost(checkinUrl);
+//            request.form("photo", FileUtil.file(path), "targetModel", faceModel);
+//            HttpResponse response = request.execute();
+//            if (response.getStatus() != 200) {
+//                log.error("人脸识别服务异常");
+//                throw new EmosException("人脸识别服务异常");
+//            }
             int risk = 1;
             String city = (String) param.get("city");
             String district = (String) param.get("district");
