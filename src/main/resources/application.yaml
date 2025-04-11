@@ -41,9 +41,9 @@ spring:
       host: ${db.host}
       port: 27017
       database: emos
-      authentication-database: admin
-      username: admin
-      password:
+#      authentication-database: admin
+#      username: admin
+#      password:
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: com.emos.wx.db.pojo
