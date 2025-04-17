@@ -1,33 +1,43 @@
 package com.emos.wx.db.dao;
 
 import com.emos.wx.db.pojo.TbUser;
-import org.apache.catalina.User;
+import com.emos.wx.db.pojo.TbUser;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 @Mapper
 public interface TbUserDao {
-    int deleteByPrimaryKey(Integer id);
+    public boolean haveRootUser();
 
-    int insertSelective(TbUser record);
+    public int insert(HashMap param);
 
-    TbUser selectByPrimaryKey(Integer id);
+    public Integer searchIdByOpenId(String openId);
 
-    int updateByPrimaryKeySelective(TbUser record);
+    public Set<String> searchUserPermissions(int userId);
 
-    int updateByPrimaryKey(TbUser record);
+    public TbUser searchById(int userId);
 
-    boolean haveRootUser();
+    public HashMap searchNameAndDept(int userId);
 
-    int insertByMap(HashMap user);
-    Integer searchIdByOpenId(String openId);
-    Set<String> searchUserPermissions(int userId);
-    TbUser searchById(int userId);
-    HashMap searchNameAndDept(int userId);
     public String searchUserHiredate(int userId);
-    HashMap searchUserSummary(int userId);
+
+    public HashMap searchUserSummary(int userId);
+
+    public ArrayList<HashMap> searchUserGroupByDept(String keyword);
+
+    public ArrayList<HashMap> searchMembers(List param);
+
+    public HashMap searchUserInfo(int userId);
+
+    public int searchDeptManagerId(int id);
+
+    public int searchGmId();
+
+    public List<HashMap> selectUserPhotoAndName(List param);
+
+    public String searchMemberEmail(int id);
 }

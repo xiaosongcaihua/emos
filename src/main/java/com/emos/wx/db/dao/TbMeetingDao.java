@@ -2,19 +2,28 @@ package com.emos.wx.db.dao;
 
 import com.emos.wx.db.pojo.TbMeeting;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Mapper
 public interface TbMeetingDao {
-    int deleteByPrimaryKey(Long id);
+    public int insertMeeting(TbMeeting entity);
 
-    int insert(TbMeeting record);
+    public ArrayList<HashMap> searchMyMeetingListByPage(HashMap param);
 
-    int insertSelective(TbMeeting record);
+    public boolean searchMeetingMembersInSameDept(String uuid);
 
-    TbMeeting selectByPrimaryKey(Long id);
+    public int updateMeetingInstanceId(HashMap map);
 
-    int updateByPrimaryKeySelective(TbMeeting record);
+    public HashMap searchMeetingById(int id);
 
-    int updateByPrimaryKey(TbMeeting record);
+    public ArrayList<HashMap> searchMeetingMembers(int id);
+
+    public int updateMeetingInfo(HashMap param);
+
+    public int deleteMeetingById(int id);
+
+    public List<String> searchUserMeetingInMonth(HashMap param);
 }

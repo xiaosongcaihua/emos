@@ -4,9 +4,13 @@ import com.emos.wx.db.pojo.TbDept;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @Mapper
 public interface TbDeptDao {
     int deleteByPrimaryKey(Integer id);
+    public ArrayList<HashMap> searchDeptMembers(String keyword);
 
     int insert(TbDept record);
 

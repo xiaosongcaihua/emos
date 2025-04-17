@@ -58,6 +58,7 @@ logging:
     console: "%d{HH:mm:ss} %-5level %msg%n"
 
 emos:
+  recieveNotify: http://localhost:8080/meeting/recieveNotify
   code: HelloWorld
   jwt:
     #密钥
@@ -72,6 +73,8 @@ emos:
   email:
     system: 1023369905@qq.com
   image-folder: D:/emos/image
+workflow:
+  url: http://localhost:9090/emos-workflow
 wx:
   app-id: wxc75eaab9baa5a676
   app-secret: 3073a9a2df2c07c102d0e653859c2027
