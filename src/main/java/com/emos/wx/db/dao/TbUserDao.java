@@ -40,4 +40,5 @@ public interface TbUserDao {
     public List<HashMap> selectUserPhotoAndName(List param);
 
     public String searchMemberEmail(int id);
+    public long searchUserCountInDept(int deptId);
 }

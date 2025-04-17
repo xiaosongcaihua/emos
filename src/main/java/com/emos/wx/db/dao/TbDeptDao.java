@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Mapper
 public interface TbDeptDao {
@@ -21,4 +22,9 @@ public interface TbDeptDao {
     int updateByPrimaryKeySelective(TbDept record);
 
     int updateByPrimaryKey(TbDept record);
+    public List<TbDept> searchAllDept();
+    public int insertDept(String deptName);
+    public int deleteDeptById(int id);
+    public int updateDeptById(TbDept entity);
+
 }
