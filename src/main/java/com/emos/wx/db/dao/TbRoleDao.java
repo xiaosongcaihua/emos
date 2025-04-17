@@ -4,6 +4,10 @@ import com.emos.wx.db.pojo.TbRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 @Mapper
 public interface TbRoleDao {
     int deleteByPrimaryKey(Integer id);
@@ -17,4 +21,12 @@ public interface TbRoleDao {
     int updateByPrimaryKeySelective(TbRole record);
 
     int updateByPrimaryKey(TbRole record);
+    public ArrayList<HashMap> searchRoleOwnPermission(int id);
+    public int insertRole(TbRole role);
+    public int updateRolePermissions(TbRole role);
+    public ArrayList<HashMap> searchAllPermission();
+    public List<TbRole> searchAllRole();
+    public long searchRoleUsersCount(int id);
+    public int deleteRoleById(int id);
+
 }
