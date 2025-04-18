@@ -25,4 +25,5 @@ public interface TbCheckinDao {
     public HashMap searchTodayCheckin(int userId);
     public long searchCheckinDays(int userId);
     public ArrayList<HashMap> searchWeekCheckin(HashMap param);
+    public int deleteUserCheckin(int userId);
 }

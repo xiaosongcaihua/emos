@@ -5,12 +5,14 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import com.emos.wx.db.pojo.MessageEntity;
 import com.emos.wx.db.pojo.MessageRefEntity;
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -72,5 +74,12 @@ public class MessageDao {
         sendTime=DateUtil.offset(sendTime,DateField.HOUR,-8);
         map.replace("sendTime",DateUtil.format(sendTime,"yyyy-MM-dd HH:mm"));
         return map;
+    }
+    public long deleteUserMessage(int receiverId){
+        Query query=new Query();
+        query.addCriteria(Criteria.where("receiverId").is(receiverId));
+        DeleteResult result=mongoTemplate.remove(query,"message");
+        long rows=result.getDeletedCount();
+        return rows;
     }
 }

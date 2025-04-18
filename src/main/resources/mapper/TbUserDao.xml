@@ -19,9 +19,7 @@
       id, open_id, nickname, photo, name, sex, tel, role, root, dept_id, status, create_time
     FROM tb_user WHERE id=#{userId} AND status=1
   </select>
-  <select id="searchUserCountInDept" parameterType="int" resultType="long">
-    SELECT COUNT(*) AS count FROM tb_user WHERE dept_id=#{deptId} AND status = 1
-  </select>
+
   <select id="searchNameAndDept" parameterType="int" resultType="HashMap">
     SELECT u.name, d.dept_name
     FROM tb_user u LEFT JOIN tb_dept d ON u.dept_id=d.id
@@ -139,4 +137,42 @@
     status = #{status},
     create_time = #{createTime}
   </insert>
+  <select id="searchUserIdByEmail" parameterType="String" resultType="int">
+    SELECT id
+    FROM tb_user
+    WHERE email=#{email} AND status = 1
+  </select>
+  <update id="activeUserAccount" parameterType="HashMap">
+    UPDATE tb_user
+    SET open_id=#{openId},
+        nickname=#{nickname},
+        photo=#{photo}
+    WHERE id=#{userId} AND status = 1
+  </update>
+  <update id="updateUserInfo" parameterType="HashMap">
+    UPDATE tb_user
+    SET name = #{name},
+        sex = #{sex},
+        dept_id = ( SELECT id FROM tb_dept WHERE dept_name = #{deptName} ) ,
+        tel=#{tel},
+        email=#{email},
+        hiredate=#{hiredate},
+        role=#{role},
+        status=#{status},
+        root=#{root}
+    WHERE id = #{userId} AND status = 1
+  </update>
+  <delete id="deleteUserById" parameterType="int">
+    DELETE FROM tb_user
+    WHERE id=#{id}
+  </delete>
+  <select id="searchUserContactList" resultType="HashMap">
+    SELECT
+      u.name,
+      IFNULL(d.dept_name,'') AS dept,
+      IFNULL(u.tel,'') AS tel
+    FROM tb_user u LEFT JOIN tb_dept d ON u.dept_id=d.id
+    WHERE u.status = 1
+    ORDER BY CONVERT(u.name using gbk) ASC;
+  </select>
 </mapper>

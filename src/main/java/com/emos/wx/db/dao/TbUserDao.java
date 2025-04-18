@@ -41,4 +41,9 @@ public interface TbUserDao {
 
     public String searchMemberEmail(int id);
     public long searchUserCountInDept(int deptId);
+    public int searchUserIdByEmail(String email);
+    public int activeUserAccount(HashMap param);
+    public int updateUserInfo(HashMap param);
+    public int deleteUserById(int id);
+    public ArrayList<HashMap> searchUserContactList();
 }

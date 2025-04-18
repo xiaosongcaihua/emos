@@ -57,7 +57,7 @@ public class RoleController {
         return R.ok().put("result", "success");
     }
 
-    @PostMapping("/updateRolePermissions")
+    @PostMapping("/updateRolePermission")
     @ApiOperation("修改角色")
     @RequiresPermissions(value = {"ROOT", "ROLE:UPDATE"}, logical = Logical.OR)
     public R updateRolePermissions(@Valid @RequestBody UpdateRolePermissionsForm form) {

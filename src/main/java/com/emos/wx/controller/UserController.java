@@ -1,5 +1,7 @@
 package com.emos.wx.controller;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.emos.wx.common.util.R;
 import com.emos.wx.config.shiro.JwtUtil;
@@ -16,10 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -119,5 +118,83 @@ public class UserController {
 
     private void saveCacheToken(String token,int userId){
         redisTemplate.opsForValue().set(token,userId+"",cacheExpire, TimeUnit.DAYS);
+    }
+    @PostMapping("/insertUser")
+    @ApiOperation("添加员工数据")
+    @RequiresPermissions(value = {"ROOT", "EMPLOYEE:INSERT"}, logical = Logical.OR)
+    public R insertUser(@RequestBody InsertUserForm form) {
+        if (!JSONUtil.isJsonArray(form.getRole())) {
+            throw new EmosException("角色不是数组格式");
+        }
+        JSONArray array = JSONUtil.parseArray(form.getRole());
+        HashMap param = new HashMap();
+        param.put("name", form.getName());
+        param.put("sex", form.getSex());
+        param.put("tel", form.getTel());
+        param.put("email", form.getEmail());
+        param.put("hiredate", form.getHiredate());
+        param.put("role", form.getRole());
+        param.put("deptName", form.getDeptName());
+        param.put("status", form.getStatus());
+        param.put("createTime", new Date());
+        if (array.contains(0)) {
+            param.put("root", true);
+        } else {
+            param.put("root", false);
+        }
+        userService.insertUser(param);
+        return R.ok().put("result", "success");
+    }
+    @PostMapping("/searchUserInfo")
+    @ApiOperation("查询员工数据")
+    @RequiresPermissions(value = {"ROOT", "EMPLOYEE:SELECT"}, logical = Logical.OR)
+    public R searchUserInfo(@Valid @RequestBody SearchUserInfoForm form) {
+        HashMap map = userService.searchUserInfo(form.getUserId());
+        return R.ok().put("result", map);
+    }
+    @GetMapping("/searchUserSelfInfo")
+    @ApiOperation("查询用户信息")
+    public R searchUserSelfInfo(@RequestHeader("token") String token) {
+        int userId = jwtUtil.getUserId(token);
+        HashMap map = userService.searchUserInfo(userId);
+        return R.ok().put("result", map);
+    } @
+            PostMapping("/updateUserInfo")
+    @ApiOperation("更新用户数据")
+    @RequiresPermissions(value = {"ROOT", "EMPLOYEE:UPDATE"}, logical = Logical.OR)
+    public R updateUserInfo(@Valid @RequestBody UpdateUserInfoForm form) {
+        boolean root = false;
+        if (!JSONUtil.isJsonArray(form.getRole())) {
+            throw new EmosException("role不是有效的JSON数组");
+        } else {
+            JSONArray role = JSONUtil.parseArray(form.getRole());
+            root = role.contains(0) ? true : false;
+        }
+        HashMap param = new HashMap();
+        param.put("name", form.getName());
+        param.put("sex", form.getSex());
+        param.put("deptName", form.getDeptName());
+        param.put("tel", form.getTel());
+        param.put("email", form.getEmail());
+        param.put("hiredate", form.getHiredate());
+        param.put("role", form.getRole());
+        param.put("status", form.getStatus());
+        param.put("userId", form.getUserId());
+        param.put("root", root);
+        int rows = userService.updateUserInfo(param);
+        return R.ok().put("result", rows);
+    }
+    @PostMapping("/deleteUserById")
+    @ApiOperation("删除员工记录")
+    @RequiresPermissions(value = {"ROOT", "EMPLOYEE:DELETE"}, logical = Logical.OR)
+    public R deleteUserById(@Valid @RequestBody DeleteUserByIdForm form) {
+        userService.deleteUserById(form.getId());
+        return R.ok().put("result", "success");
+    }
+    @GetMapping("/searchUserContactList")
+    @ApiOperation("查询通讯录列表")
+    public R searchUserContactList() {
+        JSONObject json = userService.searchUserContactList();
+        return R.ok().put("result", json);
     }
 }
